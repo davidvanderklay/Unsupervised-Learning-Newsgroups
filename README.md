@@ -6,24 +6,30 @@
 
 ## Project Objective
 
-This project explores the **20 Newsgroups dataset**, a collection of approximately 18,000 newsgroup posts across 20 topics. The goal is to apply both standard course techniques and advanced "beyond-course" methodologies to uncover latent patterns in unstructured text data.
+This project explores the **20 Newsgroups dataset**, applying both standard course techniques and advanced "beyond-course" methodologies to uncover latent patterns in unstructured text data. We focus on the transition from rigid distance-based clustering to probabilistic topic modeling.
 
 ## 🚀 Key Techniques
 
-- **Course Methods:** Text Mining (TF-IDF), Feature Extraction, Clustering (K-Means), and Association Rule Mining.
-- **Beyond-Course Methods:** Latent Dirichlet Allocation (LDA) for Topic Modeling and BERT-based semantic embeddings for document similarity.
+- **Course Methods:** Text Mining (TF-IDF), Dimensionality Reduction (TruncatedSVD/LSA), and Unsupervised Clustering (K-Means).
+- **Beyond-Course Methods:** Latent Dirichlet Allocation (LDA) for probabilistic topic modeling and semantic overlap analysis.
 
-## 📊 Checkpoint 1: Exploratory Data Analysis
+## 📂 Project Progress
 
-In the first phase of this project, I performed initial data ingestion and EDA. Key findings include:
+### 📊 Checkpoint 1: Exploratory Data Analysis
 
-- **Dataset Balance:** Identified that the dataset is well-balanced across categories (e.g., `rec.sport.hockey` vs `sci.space`), supporting stable clustering.
-- **Text Distribution:** Discovered a median post length of **503 characters**, with a heavy right-tail indicating the presence of system logs/outliers.
-- **Preprocessing Needs:** Identified a critical need for custom stop-word removal to handle common newsgroup header artifacts.
+- **Dataset Balance:** The dataset is well-balanced across 20 categories, supporting stable clustering comparisons.
+- **Text Distribution:** Median post length is **~500 characters**, following a log-normal distribution.
+- **Data Engineering:** Developed a custom manual extraction pipeline to handle the UCI 20 Newsgroups archive (ZIP/TAR.GZ) due to the instability of the Scikit-Learn server mirrors.
+
+### 🔍 Checkpoint 2: Research Questions (RQs)
+
+- **RQ1 (Clustering & SVD):** How does TruncatedSVD impact K-Means cluster cohesion compared to high-dimensional TF-IDF matrices?
+- **RQ2 (Hyperparameter Tuning):** To what extent do `max_df` and `min_df` thresholds affect the recovery of ground-truth categories (ARI/NMI)?
+- **RQ3 (External - LDA):** Can LDA uncover shared semantic sub-topics across overlapping newsgroups (e.g., `pc.hardware` vs `mac.hardware`) better than rigid K-Means?
 
 ## 🛠️ Installation & Setup
 
-To run this project locally, ensure you have the following libraries installed:
+To run this project, clone the repo and ensure the data ZIP is in the root directory.
 
 ```bash
 pip install pandas numpy matplotlib seaborn scikit-learn
@@ -38,12 +44,12 @@ git clone https://github.com/davidvanderklay/Unsupervised-Learning-Newsgroups.gi
 ### 2. Open the Jupyter Notebook:
 
 ```bash
-jupyter notebook checkpoint_1.ipynb
+jupyter notebook Project_Notebook.ipynb
 ```
 
 ## 📂 Project Structure
 
-- `checkpoint_1.ipynb`: Initial dataset selection, cleaning, and EDA.
+- `Project_Notebook.ipynb`: Initial dataset selection, cleaning, EDA, research question synthesis.
 - `requirements.txt`: List of dependencies (to be updated as project grows).
 - `data/`: (Ignored via .gitignore) Raw data is fetched via scikit-learn API.
 
