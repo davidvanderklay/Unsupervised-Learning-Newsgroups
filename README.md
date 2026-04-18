@@ -3,8 +3,8 @@
 This repository contains a curated, reproducible notebook for CSCE 676 covering:
 - Checkpoint 1: candidate dataset comparison, selection, and EDA.
 - Checkpoint 2: research question formation and method feasibility.
-- Final narrative: Q0 baseline validation, RQ1/RQ2 course methods, and RQ3 external topic modeling.
-- Depth extensions: taxonomy-of-noise framing, error analysis tables, document-level case studies, and robustness checks.
+- Final narrative: Q0 baseline validation, course-method experiments, and beyond-course transformer embedding analysis.
+- Depth extensions: taxonomy-of-noise framing, expanded EDA, error analysis tables, document-level case studies, and robustness checks.
 
 ## Canonical Notebook
 - `133005021_final_checkpoint.ipynb`
@@ -17,9 +17,11 @@ This repository contains a curated, reproducible notebook for CSCE 676 covering:
 - `RQ2` parameter sensitivity:
   `min_df/max_df` grid plus confusion-pair error analysis.
 - `RQ3` external method:
+  Sentence-BERT embeddings + KMeans compared to bag-of-words baselines.
+- `RQ4` comparison method:
   LDA mixed-membership interpretation with case-study snippets.
 - Robustness:
-  random-seed stability and SVD-dimension sensitivity checks.
+  random-seed stability, mean/std reporting, and SVD-dimension sensitivity checks.
 
 ## NixOS + direnv Setup
 1. Enable direnv for your shell and run:
