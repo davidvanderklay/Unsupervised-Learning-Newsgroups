@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-NOTEBOOK_INPUT="${1:-133005021_final_checkpoint.ipynb}"
-NOTEBOOK_OUTPUT="${2:-133005021_final_checkpoint.ran.ipynb}"
+NOTEBOOK_INPUT="${1:-main_notebook.ipynb}"
+NOTEBOOK_OUTPUT="${2:-main_notebook.ran.ipynb}"
 
 if ! command -v jupyter >/dev/null 2>&1; then
   echo "jupyter not found in PATH. Activate the environment first (direnv allow)." >&2

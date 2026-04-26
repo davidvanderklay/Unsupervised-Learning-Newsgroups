@@ -1,57 +1,84 @@
-# Data Mining Topic Discovery: 20 Newsgroups Analysis
+# Uncovering Semantic Structure in 20 Newsgroups
 
-This repository contains a curated, reproducible notebook for CSCE 676 covering:
-- Checkpoint 1: candidate dataset comparison, selection, and EDA.
-- Checkpoint 2: research question formation and method feasibility.
-- Final narrative: Q0 baseline validation, course-method experiments, and beyond-course transformer embedding analysis.
-- Depth extensions: taxonomy-of-noise framing, expanded EDA, error analysis tables, document-level case studies, and robustness checks.
+A graduate data-mining project on why unsupervised text clustering fails on noisy discussion corpora, and which modeling choices recover structure more reliably. The notebook frames the corpus around vocabulary collision, quoted-reply contamination, and header leakage, then compares lexical clustering pipelines against semantic sentence embeddings and mixed-membership topic modeling.
 
-## Canonical Notebook
-- `133005021_final_checkpoint.ipynb`
+👉 Start here: `main_notebook.ipynb`
 
-## Analysis Structure (Current)
-- `Q0A/Q0B/Q0C` baseline validation:
-  vocabulary collision, header leakage, naive baseline failure.
-- `RQ1` representation gain:
-  TF-IDF baseline versus SVD-enhanced clustering.
-- `RQ2` parameter sensitivity:
-  `min_df/max_df` grid plus confusion-pair error analysis.
-- `RQ3` external method:
-  Sentence-BERT embeddings + KMeans compared to bag-of-words baselines.
-- `RQ4` comparison method:
-  LDA mixed-membership interpretation with case-study snippets.
-- Robustness:
-  random-seed stability, mean/std reporting, and SVD-dimension sensitivity checks.
+Project video: https://youtu.be/cIzEQrFlmAg
 
-## NixOS + direnv Setup
-1. Enable direnv for your shell and run:
+## Research Questions
+- `RQ1:` Does Truncated Singular Value Decomposition (SVD) improve cluster geometry and label recovery relative to raw TF-IDF?
+- `RQ2:` How sensitive is lexical clustering quality to TF-IDF document-frequency thresholds?
+- `RQ3:` Do Sentence-BERT embeddings recover category boundaries that bag-of-words representations systematically miss?
+- `RQ4:` Can Latent Dirichlet Allocation (LDA) expose overlap structure that hard clustering flattens?
+
+## Results Summary
+The strongest result is that semantic embeddings substantially outperform lexical clustering on the overlap-heavy newsgroup categories. TF-IDF tuning matters, but it does not eliminate the core vocabulary-collision problem; SBERT recovers much more of the category structure, while LDA helps explain why some documents remain mixed rather than cleanly clusterable.
+
+## Data
+- **Primary dataset:** 20 Newsgroups archive, provided here as `twenty+newsgroups.zip`.
+- **Source lineage:** UCI / classic 20 Newsgroups archive; the notebook uses a local archive loader rather than the deprecated scikit-learn fetch path.
+- **Preprocessing in the notebooks:** archive extraction, `latin-1` decoding, header/body handling where appropriate, lowercasing, empty-document removal, duplicate removal, and TF-IDF-based token filtering.
+- **Checkpoint comparison datasets:** Online Retail (UCI) and Twitch graph data (SNAP) are documented in the checkpoint notebooks for dataset-selection comparison only; they are not used in the final experiments.
+
+## Reproducing the Project
+This repo supports both a local Nix workflow and a plain Python/requirements workflow.
+
+### Option 1: NixOS / direnv workflow
 ```bash
 direnv allow
-```
-2. Enter the dev environment (automatic via `.envrc`) and confirm tools:
-```bash
-python -V
+python --version
 jupyter --version
+./scripts/run_notebook.sh main_notebook.ipynb
 ```
-3. (Optional) register a dedicated kernel:
+This writes an executed copy to `main_notebook.ran.ipynb`.
+
+### Option 2: Python + requirements workflow
 ```bash
-python -m ipykernel install --user --name cs676-newsgroups --display-name "CS676 Newsgroups"
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+./scripts/run_notebook.sh main_notebook.ipynb
+```
+Notes:
+- `SentenceTransformer("all-MiniLM-L6-v2")` may download from Hugging Face on first run.
+- For fully offline reruns, pre-cache that model once while online.
+- Place `twenty+newsgroups.zip` in the repo root before running the notebooks.
+
+### Run order
+1. Read or execute `main_notebook.ipynb` for the final curated analysis.
+2. Consult `checkpoints/checkpoint_1.ipynb` for dataset selection and initial EDA.
+3. Consult `checkpoints/checkpoint_2.ipynb` for research-question formation and feasibility testing.
+
+## Key Dependencies
+- `python 3.13.12`
+- `pandas 2.3.3`
+- `scikit-learn 1.8.0`
+- `sentence-transformers 3.4.1`
+- `torch 2.11.0`
+- `matplotlib 3.10.8`
+- `seaborn 0.13.2`
+- `jupyterlab 4.5.6`
+
+## Repository Structure
+```text
+.
+├── README.md
+├── main_notebook.ipynb
+├── checkpoints/
+│   ├── checkpoint_1.ipynb
+│   └── checkpoint_2.ipynb
+├── scripts/
+│   └── run_notebook.sh
+├── twenty+newsgroups.zip
+├── requirements.txt
+├── flake.nix
+└── .envrc
 ```
 
-## Re-run Notebook End-to-End
-```bash
-./scripts/run_notebook.sh 133005021_final_checkpoint.ipynb
-```
-This writes an executed copy to `133005021_final_checkpoint.ran.ipynb`.
+## Checkpoint Notes
+- `checkpoint_1.ipynb` preserves the original dataset-selection and EDA submission state.
+- `checkpoint_2.ipynb` is packaged as a standalone notebook for the RQ-formation stage. It includes the minimal setup cells needed to run independently, even though the original working notebook evolved cumulatively.
 
-## Data Requirement
-Place `twenty+newsgroups.zip` in the repository root.
-
-## Collaboration Declaration (Notebook Contains Full Detail)
-- Collaborators
-- Web sources
-- AI tools
-- Paper citations
-
-## License
-Academic course project. Dataset usage follows source terms for 20 Newsgroups.
+## Collaboration Declaration
+The full collaboration declaration lives inside the notebooks and includes collaborators, web sources, AI tools, and paper citations used in the project.
