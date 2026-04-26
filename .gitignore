@@ -1,0 +1,5 @@
+.direnv
+.ipynb_checkpoints/
+.venv/
+*.pyc
+__pycache__/

@@ -1,58 +1,84 @@
-# Data Mining Topic Discovery: 20 Newsgroups Analysis
+# Uncovering Semantic Structure in 20 Newsgroups
 
-![Python](https://img.shields.io/badge/python-3.8+-blue.svg)
-![Data Mining](https://img.shields.io/badge/Course-Data%20Mining-green.svg)
-![Status](https://img.shields.io/badge/Status-Checkpoint%201%20Complete-orange.svg)
+A graduate data-mining project on why unsupervised text clustering fails on noisy discussion corpora, and which modeling choices recover structure more reliably. The notebook frames the corpus around vocabulary collision, quoted-reply contamination, and header leakage, then compares lexical clustering pipelines against semantic sentence embeddings and mixed-membership topic modeling.
 
-## Project Objective
+👉 Start here: `main_notebook.ipynb`
 
-This project explores the **20 Newsgroups dataset**, applying both standard course techniques and advanced "beyond-course" methodologies to uncover latent patterns in unstructured text data. We focus on the transition from rigid distance-based clustering to probabilistic topic modeling.
+Project video: https://youtu.be/cIzEQrFlmAg
 
-## 🚀 Key Techniques
+## Research Questions
+- `RQ1:` Does Truncated Singular Value Decomposition (SVD) improve cluster geometry and label recovery relative to raw TF-IDF?
+- `RQ2:` How sensitive is lexical clustering quality to TF-IDF document-frequency thresholds?
+- `RQ3:` Do Sentence-BERT embeddings recover category boundaries that bag-of-words representations systematically miss?
+- `RQ4:` Can Latent Dirichlet Allocation (LDA) expose overlap structure that hard clustering flattens?
 
-- **Course Methods:** Text Mining (TF-IDF), Dimensionality Reduction (TruncatedSVD/LSA), and Unsupervised Clustering (K-Means).
-- **Beyond-Course Methods:** Latent Dirichlet Allocation (LDA) for probabilistic topic modeling and semantic overlap analysis.
+## Results Summary
+The strongest result is that semantic embeddings substantially outperform lexical clustering on the overlap-heavy newsgroup categories. TF-IDF tuning matters, but it does not eliminate the core vocabulary-collision problem; SBERT recovers much more of the category structure, while LDA helps explain why some documents remain mixed rather than cleanly clusterable.
 
-## 📂 Project Progress
+## Data
+- **Primary dataset:** 20 Newsgroups archive, provided here as `twenty+newsgroups.zip`.
+- **Source lineage:** UCI / classic 20 Newsgroups archive; the notebook uses a local archive loader rather than the deprecated scikit-learn fetch path.
+- **Preprocessing in the notebooks:** archive extraction, `latin-1` decoding, header/body handling where appropriate, lowercasing, empty-document removal, duplicate removal, and TF-IDF-based token filtering.
+- **Checkpoint comparison datasets:** Online Retail (UCI) and Twitch graph data (SNAP) are documented in the checkpoint notebooks for dataset-selection comparison only; they are not used in the final experiments.
 
-### 📊 Checkpoint 1: Exploratory Data Analysis
+## Reproducing the Project
+This repo supports both a local Nix workflow and a plain Python/requirements workflow.
 
-- **Dataset Balance:** The dataset is well-balanced across 20 categories, supporting stable clustering comparisons.
-- **Text Distribution:** Median post length is **~500 characters**, following a log-normal distribution.
-- **Data Engineering:** Developed a custom manual extraction pipeline to handle the UCI 20 Newsgroups archive (ZIP/TAR.GZ) due to the instability of the Scikit-Learn server mirrors.
-
-### 🔍 Checkpoint 2: Research Questions (RQs)
-
-- **RQ1 (Clustering & SVD):** How does TruncatedSVD impact K-Means cluster cohesion compared to high-dimensional TF-IDF matrices?
-- **RQ2 (Hyperparameter Tuning):** To what extent do `max_df` and `min_df` thresholds affect the recovery of ground-truth categories (ARI/NMI)?
-- **RQ3 (External - LDA):** Can LDA uncover shared semantic sub-topics across overlapping newsgroups (e.g., `pc.hardware` vs `mac.hardware`) better than rigid K-Means?
-
-## 🛠️ Installation & Setup
-
-To run this project, clone the repo and ensure the data ZIP is in the root directory.
-
+### Option 1: NixOS / direnv workflow
 ```bash
-pip install pandas numpy matplotlib seaborn scikit-learn
+direnv allow
+python --version
+jupyter --version
+./scripts/run_notebook.sh main_notebook.ipynb
+```
+This writes an executed copy to `main_notebook.ran.ipynb`.
+
+### Option 2: Python + requirements workflow
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+./scripts/run_notebook.sh main_notebook.ipynb
+```
+Notes:
+- `SentenceTransformer("all-MiniLM-L6-v2")` may download from Hugging Face on first run.
+- For fully offline reruns, pre-cache that model once while online.
+- Place `twenty+newsgroups.zip` in the repo root before running the notebooks.
+
+### Run order
+1. Read or execute `main_notebook.ipynb` for the final curated analysis.
+2. Consult `checkpoints/checkpoint_1.ipynb` for dataset selection and initial EDA.
+3. Consult `checkpoints/checkpoint_2.ipynb` for research-question formation and feasibility testing.
+
+## Key Dependencies
+- `python 3.13.12`
+- `pandas 2.3.3`
+- `scikit-learn 1.8.0`
+- `sentence-transformers 3.4.1`
+- `torch 2.11.0`
+- `matplotlib 3.10.8`
+- `seaborn 0.13.2`
+- `jupyterlab 4.5.6`
+
+## Repository Structure
+```text
+.
+├── README.md
+├── main_notebook.ipynb
+├── checkpoints/
+│   ├── checkpoint_1.ipynb
+│   └── checkpoint_2.ipynb
+├── scripts/
+│   └── run_notebook.sh
+├── twenty+newsgroups.zip
+├── requirements.txt
+├── flake.nix
+└── .envrc
 ```
 
-### 1. Clone the respository:
+## Checkpoint Notes
+- `checkpoint_1.ipynb` preserves the original dataset-selection and EDA submission state.
+- `checkpoint_2.ipynb` is packaged as a standalone notebook for the RQ-formation stage. It includes the minimal setup cells needed to run independently, even though the original working notebook evolved cumulatively.
 
-```bash
-git clone https://github.com/davidvanderklay/Unsupervised-Learning-Newsgroups.git
-```
-
-### 2. Open the Jupyter Notebook:
-
-```bash
-jupyter notebook Project_Notebook.ipynb
-```
-
-## 📂 Project Structure
-
-- `Project_Notebook.ipynb`: Initial dataset selection, cleaning, EDA, research question synthesis.
-- `requirements.txt`: List of dependencies (to be updated as project grows).
-- `data/`: (Ignored via .gitignore) Raw data is fetched via scikit-learn API.
-
-## 📝 License
-
-This project is for academic purposes as part of the CS Data Mining course. The 20 Newsgroups dataset is in the public domain.
+## Collaboration Declaration
+The full collaboration declaration lives inside the notebooks and includes collaborators, web sources, AI tools, and paper citations used in the project.
